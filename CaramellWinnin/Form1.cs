@@ -17,8 +17,10 @@ namespace CaramellWinnin
         private bool AutoLoadMusic = true;
         private string MusicLink = "https://www.youtube.com/watch?v=V-KSyjmhwE0";
         private bool ImageBased = false;
-        private int ColorStep = 4;
-        private int TimerInterval = 500;
+        private int ColorStep = 32;
+        private int TimerInterval = 4;
+        private int index = 0;
+        private double OpacityPercent = 5;
         private Settings settings;
 
         private int oldWindowLong;
@@ -57,7 +59,7 @@ namespace CaramellWinnin
             }
             else
             {
-                settings = new Settings(AutoLoadMusic, MusicLink, ImageBased, ColorStep, TimerInterval);
+                settings = new Settings(AutoLoadMusic, MusicLink, ImageBased, ColorStep, TimerInterval, OpacityPercent);
                 string settingsJson = JsonConvert.SerializeObject(settings);
                 File.WriteAllText("settings.json", settingsJson);
             }
@@ -67,7 +69,9 @@ namespace CaramellWinnin
             ImageBased = settings.UseImage;
             ColorStep = settings.ColorStep;
             TimerInterval = settings.TimerInterval;
+            OpacityPercent = settings.OpacityPercent;
 
+            Opacity = OpacityPercent * 0.01;
             timer1.Interval = TimerInterval;
             timer1.Enabled = true;
         }
@@ -87,21 +91,32 @@ namespace CaramellWinnin
         {
             base.OnPaint(e);
 
+            index++;
+            if(index < TimerInterval)
+            {
+                return;
+            }
+            index = 0;
+
             if (color < 255)
             {
                 color += ColorStep;
             }
             else
             {
-                color = -color;
+                color = 0;
             }
-            //Console.WriteLine("OnPaint: " + color);
+
+
             int r;
             int gr;
             int b;
             HsvToRgb(color, 1, 1, out r, out gr, out b);
 
-            if (!ImageBased) { BackColor = Color.FromArgb(r, gr, b); return; }
+            if (!ImageBased) {
+                BackColor = Color.FromArgb(r, gr, b);
+                return;
+            }
 
             Graphics g = e.Graphics;
             g.CompositingQuality = System.Drawing.Drawing2D.CompositingQuality.HighSpeed;
@@ -122,8 +137,6 @@ namespace CaramellWinnin
             ImageAttributes attributes = new ImageAttributes();
             attributes.SetColorMatrix(matrix, ColorMatrixFlag.Default, ColorAdjustType.Default);
 
-            //g.DrawImage(newImage, 0, 0, Width, Height);
-            //g.DrawImage(newImage, new Rectangle(new Point(0, 0), new Size(newImage.Width, newImage.Height)), 0, 0, newImage.Width, newImage.Height, GraphicsUnit.Pixel, attributes);\
             g.DrawImage(newImage, new Rectangle(new Point(0, 0), new Size(newImage.Width, newImage.Height)), 0, 0, newImage.Width, newImage.Height, GraphicsUnit.Pixel, attributes);
 
             newImage.Dispose();
