@@ -107,7 +107,6 @@ namespace CaramellWinnin
                 color = 0;
             }
 
-
             int r;
             int gr;
             int b;
