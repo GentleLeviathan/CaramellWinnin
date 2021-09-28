@@ -3,7 +3,7 @@ Puts the power of "Caramelldansen" on your desktop.
 
 - Gives you a completely in-your-head advantage in competitive gaming.
 - Helps distract you from things that are important.
-- Protects your screen from burn-in.
+- Protects your screen from burn-in. (Probably. Maybe.)
 
 ![caramellwinnin_demonstration_gif](https://imgpile.com/images/uiZ1Y1.gif)
 
